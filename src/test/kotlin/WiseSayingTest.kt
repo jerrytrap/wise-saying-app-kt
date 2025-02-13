@@ -43,4 +43,27 @@ class WiseSayingTest {
             .contains("명언 : ")
             .contains("작가 : ")
     }
+
+    @Test
+    fun `명언 등록 시 명언번호 표시`() {
+        val input = """
+            등록
+            현재를 사랑하라.
+            작자미상
+        """.trimIndent()
+
+        val inputStream = ByteArrayInputStream(input.toByteArray())
+        System.setIn(inputStream)
+
+        val outputStream = ByteArrayOutputStream()
+        System.setOut(PrintStream(outputStream))
+
+        App().handleCommand()
+
+        val actualOutput = outputStream.toString()
+        assertThat(actualOutput)
+            .contains("명언 : ")
+            .contains("작가 : ")
+            .contains("1번 명언이 등록되었습니다.\n")
+    }
 }
