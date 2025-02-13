@@ -107,4 +107,20 @@ class WiseSayingTest {
             .contains("1 / 작자미상 / 현재를 사랑하라.")
             .contains("2 / 작자미상 / 현재를 사랑하라.")
     }
+
+    @Test
+    fun `명언 삭제`() {
+        val input = "삭제?id=1"
+        val wiseSaying = WiseSaying("현재를 사랑하라.", "작자미상")
+        app.addWiseSaying(wiseSaying)
+
+        testUtil.setInputStream(input)
+        val outputStream = testUtil.setOutputStream()
+
+        app.handleCommand()
+
+        val actualOutput = outputStream.toString()
+        assertThat(actualOutput).contains("1번 명언이 삭제되었습니다.")
+        assertEquals(0, app.getWiseSayingCount())
+    }
 }
