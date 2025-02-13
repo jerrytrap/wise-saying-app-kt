@@ -1,9 +1,8 @@
 import org.example.App
 import org.junit.jupiter.api.Test
-import java.io.ByteArrayInputStream
-import java.io.ByteArrayOutputStream
-import java.io.PrintStream
 import kotlin.test.assertEquals
+import org.assertj.core.api.Assertions.assertThat
+import java.io.*
 
 class WiseSayingTest {
     @Test
@@ -17,9 +16,31 @@ class WiseSayingTest {
         val outputStream = ByteArrayOutputStream()
         System.setOut(PrintStream(outputStream))
 
-        App().run()
+        App().handleCommand()
 
         val actualOutput = outputStream.toString()
         assertEquals(actualOutput, expectedOutput)
+    }
+
+    @Test
+    fun `명언 등록`() {
+        val input = """
+            등록
+            현재를 사랑하라.
+            작자미상
+        """.trimIndent()
+
+        val inputStream = ByteArrayInputStream(input.toByteArray())
+        System.setIn(inputStream)
+
+        val outputStream = ByteArrayOutputStream()
+        System.setOut(PrintStream(outputStream))
+
+        App().handleCommand()
+
+        val actualOutput = outputStream.toString()
+        assertThat(actualOutput)
+            .contains("명언 : ")
+            .contains("작가 : ")
     }
 }
