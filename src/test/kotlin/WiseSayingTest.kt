@@ -2,21 +2,20 @@ import org.example.App
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 import org.assertj.core.api.Assertions.assertThat
-import java.io.*
 
 class WiseSayingTest {
+    private val app = App()
+    private val testUtil = TestUtil()
+
     @Test
     fun `종료 명령어 입력 시 프로그램 종료`() {
         val input = "종료"
         val expectedOutput = "프로그램을 종료합니다."
 
-        val inputStream = ByteArrayInputStream(input.toByteArray())
-        System.setIn(inputStream)
+        testUtil.setInputStream(input)
+        val outputStream = testUtil.setOutputStream()
 
-        val outputStream = ByteArrayOutputStream()
-        System.setOut(PrintStream(outputStream))
-
-        App().handleCommand()
+        app.handleCommand()
 
         val actualOutput = outputStream.toString()
         assertEquals(actualOutput, expectedOutput)
@@ -30,13 +29,10 @@ class WiseSayingTest {
             작자미상
         """.trimIndent()
 
-        val inputStream = ByteArrayInputStream(input.toByteArray())
-        System.setIn(inputStream)
+        testUtil.setInputStream(input)
+        val outputStream = testUtil.setOutputStream()
 
-        val outputStream = ByteArrayOutputStream()
-        System.setOut(PrintStream(outputStream))
-
-        App().handleCommand()
+        app.handleCommand()
 
         val actualOutput = outputStream.toString()
         assertThat(actualOutput)
@@ -52,18 +48,36 @@ class WiseSayingTest {
             작자미상
         """.trimIndent()
 
-        val inputStream = ByteArrayInputStream(input.toByteArray())
-        System.setIn(inputStream)
+        testUtil.setInputStream(input)
+        val outputStream = testUtil.setOutputStream()
 
-        val outputStream = ByteArrayOutputStream()
-        System.setOut(PrintStream(outputStream))
-
-        App().handleCommand()
+        app.handleCommand()
 
         val actualOutput = outputStream.toString()
-        assertThat(actualOutput)
-            .contains("명언 : ")
-            .contains("작가 : ")
-            .contains("1번 명언이 등록되었습니다.\n")
+        assertThat(actualOutput).contains("1번 명언이 등록되었습니다.")
+    }
+
+    @Test
+    fun `명언 등록 시 명언번호 증가`() {
+        val input = """
+            등록
+            현재를 사랑하라.
+            작자미상
+        """.trimIndent()
+
+        testUtil.setInputStream(input)
+        val outputStream1 = testUtil.setOutputStream()
+
+        app.handleCommand()
+
+        testUtil.setInputStream(input)
+        val outputStream2 = testUtil.setOutputStream()
+
+        app.handleCommand()
+
+        val actualOutput1 = outputStream1.toString()
+        val actualOutput2 = outputStream2.toString()
+        assertThat(actualOutput1).contains("1번 명언이 등록되었습니다.")
+        assertThat(actualOutput2).contains("2번 명언이 등록되었습니다.")
     }
 }

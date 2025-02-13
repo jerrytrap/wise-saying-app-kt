@@ -1,6 +1,8 @@
 package org.example
 
 class App {
+    private var wiseSayingId = 1;
+
     fun run() {
         while (handleCommand()) {
             continue
@@ -18,7 +20,8 @@ class App {
             val wiseSaying = readln()
             print("작가 : ")
             val author = readln()
-            println("1번 명언이 등록되었습니다.")
+            println("${wiseSayingId}번 명언이 등록되었습니다.")
+            wiseSayingId++
         }
         return true;
     }
