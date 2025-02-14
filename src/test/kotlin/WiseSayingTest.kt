@@ -1,12 +1,13 @@
-import org.example.App
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 import org.assertj.core.api.Assertions.assertThat
-import org.example.WiseSaying
+import org.example.*
 import org.junit.jupiter.api.AfterEach
 
 class WiseSayingTest {
-    private val app = App()
+    private val wiseSayingService = WiseSayingService(WiseSayingRepository())
+    private val wiseSayingController = WiseSayingController(wiseSayingService)
+
     private val testUtil = TestUtil()
 
     @AfterEach
@@ -22,7 +23,7 @@ class WiseSayingTest {
         testUtil.setInputStream(input)
         val outputStream = testUtil.setOutputStream()
 
-        app.handleCommand()
+        wiseSayingController.handleCommand()
 
         val actualOutput = outputStream.toString()
         assertEquals(actualOutput, expectedOutput)
@@ -39,7 +40,7 @@ class WiseSayingTest {
         testUtil.setInputStream(input)
         val outputStream = testUtil.setOutputStream()
 
-        app.handleCommand()
+        wiseSayingController.handleCommand()
 
         val actualOutput = outputStream.toString()
         assertThat(actualOutput)
@@ -58,7 +59,7 @@ class WiseSayingTest {
         testUtil.setInputStream(input)
         val outputStream = testUtil.setOutputStream()
 
-        app.handleCommand()
+        wiseSayingController.handleCommand()
 
         val actualOutput = outputStream.toString()
         assertThat(actualOutput).contains("1번 명언이 등록되었습니다.")
@@ -75,12 +76,12 @@ class WiseSayingTest {
         testUtil.setInputStream(input)
         val outputStream1 = testUtil.setOutputStream()
 
-        app.handleCommand()
+        wiseSayingController.handleCommand()
 
         testUtil.setInputStream(input)
         val outputStream2 = testUtil.setOutputStream()
 
-        app.handleCommand()
+        wiseSayingController.handleCommand()
 
         val actualOutput1 = outputStream1.toString()
         val actualOutput2 = outputStream2.toString()
@@ -93,13 +94,15 @@ class WiseSayingTest {
         val input = "목록"
         val wiseSaying1 = WiseSaying("현재를 사랑하라.", "작자미상")
         val wiseSaying2 = WiseSaying("현재를 사랑하라.", "작자미상")
-        app.addWiseSaying(wiseSaying1)
-        app.addWiseSaying(wiseSaying2)
+        wiseSayingService.apply {
+            addWiseSaying(wiseSaying1)
+            addWiseSaying(wiseSaying2)
+        }
 
         testUtil.setInputStream(input)
         val outputStream = testUtil.setOutputStream()
 
-        app.handleCommand()
+        wiseSayingController.handleCommand()
 
         val actualOutput = outputStream.toString()
         assertThat(actualOutput)
@@ -112,16 +115,16 @@ class WiseSayingTest {
     fun `명언 삭제`() {
         val input = "삭제?id=1"
         val wiseSaying = WiseSaying("현재를 사랑하라.", "작자미상")
-        app.addWiseSaying(wiseSaying)
+        wiseSayingService.addWiseSaying(wiseSaying)
 
         testUtil.setInputStream(input)
         val outputStream = testUtil.setOutputStream()
 
-        app.handleCommand()
+        wiseSayingController.handleCommand()
 
         val actualOutput = outputStream.toString()
         assertThat(actualOutput).contains("1번 명언이 삭제되었습니다.")
-        assertEquals(0, app.getWiseSayingCount())
+        assertEquals(0, wiseSayingService.getCount())
     }
 
     @Test
@@ -131,10 +134,10 @@ class WiseSayingTest {
         testUtil.setInputStream(input)
         val outputStream = testUtil.setOutputStream()
 
-        app.handleCommand()
+        wiseSayingController.handleCommand()
 
         val actualOutput = outputStream.toString()
         assertThat(actualOutput).contains("1번 명언은 존재하지 않습니다.")
-        assertEquals(0, app.getWiseSayingCount())
+        assertEquals(0, wiseSayingService.getCount())
     }
 }
