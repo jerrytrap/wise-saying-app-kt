@@ -1,13 +1,19 @@
 package org.example
 
+import java.security.Key
+
 class Command private constructor(
     val type: CommandType,
-    val id: Int = DEFAULT_ID
+    val targetId: Int = DEFAULT_ID,
+    val keywordType: KeywordType = KeywordType.NONE,
+    val keyword: String = ""
 ) {
     companion object {
         private const val DEFAULT_ID = -1
         private val editRegex = "^수정\\?id=(\\d+)$".toRegex()
         private val deleteRegex = "^삭제\\?id=(\\d+)$".toRegex()
+        private val searchRegex = "^목록(?:\\?keywordType=(author|content)&keyword=([^&]+))?(?:[?&]page=(\\d+))?$".toRegex()
+
 
         fun getInstance(input: String): Command {
             return when {
@@ -36,13 +42,21 @@ class Command private constructor(
 
                 input.matches(deleteRegex) -> {
                     val matchResult = deleteRegex.find(input)
-                    val id = matchResult?.groups?.get(1)?.value?.toIntOrNull()
+                    val id = matchResult?.groups?.get(1)?.value?.toIntOrNull() ?: return Command(CommandType.UNKNOWN)
 
-                    if (id != null) {
-                        Command(CommandType.DELETE, id)
-                    } else {
-                        Command(CommandType.UNKNOWN)
-                    }
+                    Command(CommandType.DELETE, id)
+                }
+
+                input.matches(searchRegex) -> {
+                    val matchResult = searchRegex.find(input)
+                    val keywordType = matchResult?.groups?.get(1)?.value ?: return Command(CommandType.UNKNOWN)
+                    val keyword = matchResult.groups[2]?.value ?: return Command(CommandType.UNKNOWN)
+
+                    Command(
+                        type = CommandType.SHOW,
+                        keywordType = KeywordType.fromType(keywordType),
+                        keyword = keyword
+                    )
                 }
 
                 else -> {

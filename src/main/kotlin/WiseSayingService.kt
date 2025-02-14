@@ -15,6 +15,8 @@ class WiseSayingService(
 
     fun getWiseSayings() = wiseSayingRepository.getAll();
 
+    fun getWiseSayings(keywordType: KeywordType, keyword: String) = wiseSayingRepository.search(keywordType, keyword)
+
     fun deleteWiseSaying(id: Int): Boolean {
         return if (wiseSayingRepository.find(id) != null) {
             wiseSayingRepository.delete(id)

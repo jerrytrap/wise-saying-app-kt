@@ -165,4 +165,25 @@ class WiseSayingTest {
         assertEquals("현재와 자신을 사랑하라.", modifiedWiseSaying.content)
         assertEquals("홍길동", modifiedWiseSaying.author)
     }
+
+    @Test
+    fun `명언 검색`() {
+        val input = "목록?keywordType=content&keyword=현재"
+
+        wiseSayingService.apply {
+            addWiseSaying("현재를 사랑하라.", "작자미상")
+            addWiseSaying("과거에 집착하지 마라.", "홍길동")
+        }
+
+        testUtil.setInputStream(input)
+        val outputStream = testUtil.setOutputStream()
+
+        wiseSayingController.handleCommand()
+
+        val actualOutput = outputStream.toString()
+        assertThat(actualOutput)
+            .contains("번호 / 작가 / 명언")
+            .contains("1 / 작자미상 / 현재를 사랑하라.")
+            .doesNotContain("2 / 홍길동 / 과거에 집착하지 마라.")
+    }
 }

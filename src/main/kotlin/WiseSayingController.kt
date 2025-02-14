@@ -26,24 +26,26 @@ class WiseSayingController(
             CommandType.SHOW -> {
                 println("번호 / 작가 / 명언")
 
-                wiseSayingService.getWiseSayings().forEach { wiseSaying ->
-                    println("${wiseSaying.id} / ${wiseSaying.author} / ${wiseSaying.content}")
+                if ((command.keywordType != KeywordType.NONE).and(command.keyword.isNotBlank())) {
+                    printWiseSayings(wiseSayingService.getWiseSayings(command.keywordType, command.keyword))
+                } else {
+                    printWiseSayings(wiseSayingService.getWiseSayings())
                 }
             }
 
             CommandType.DELETE -> {
-                if (wiseSayingService.deleteWiseSaying(command.id)) {
-                    println("${command.id}번 명언이 삭제되었습니다.")
+                if (wiseSayingService.deleteWiseSaying(command.targetId)) {
+                    println("${command.targetId}번 명언이 삭제되었습니다.")
                 } else {
-                    println("${command.id}번 명언은 존재하지 않습니다.")
+                    println("${command.targetId}번 명언은 존재하지 않습니다.")
                 }
             }
 
             CommandType.MODIFY -> {
-                val wiseSaying = wiseSayingService.findWiseSaying(command.id)
+                val wiseSaying = wiseSayingService.findWiseSaying(command.targetId)
 
                 if (wiseSaying == null) {
-                    println("${command.id}번 명언은 존재하지 않습니다.")
+                    println("${command.targetId}번 명언은 존재하지 않습니다.")
                 } else {
                     println("명언(기존) : ${wiseSaying.content}")
                     print("명언 : ")
@@ -52,7 +54,7 @@ class WiseSayingController(
                     print("작가 : ")
                     val author = readln()
 
-                    wiseSayingService.modifyWiseSaying(command.id, content, author)
+                    wiseSayingService.modifyWiseSaying(command.targetId, content, author)
                 }
             }
 
@@ -61,5 +63,11 @@ class WiseSayingController(
             }
         }
         return true
+    }
+
+    private fun printWiseSayings(wiseSayings: List<WiseSaying>) {
+        wiseSayings.forEach { wiseSaying ->
+            println("${wiseSaying.id} / ${wiseSaying.author} / ${wiseSaying.content}")
+        }
     }
 }

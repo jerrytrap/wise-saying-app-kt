@@ -20,7 +20,16 @@ class WiseSayingRepository(
 
     fun getCount() = wiseSayings.size
 
-    fun getAll() = wiseSayings
+    fun getAll() = wiseSayings.toList()
+
+    fun search(keywordType: KeywordType, keyword: String) =
+        wiseSayings.filter {
+            when (keywordType) {
+                KeywordType.CONTENT -> it.content.contains(keyword)
+                KeywordType.AUTHOR -> it.author.contains(keyword)
+                KeywordType.NONE -> true
+            }
+        }
 
     fun find(id: Int): WiseSaying? {
         return wiseSayings.find { it.id == id }
