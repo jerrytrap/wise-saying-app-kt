@@ -16,6 +16,6 @@ class WiseSayingRepository {
     }
 
     fun delete(id: Int) {
-        wiseSayings.removeAt(id - 1)
+        wiseSayings.removeIf { it.id == id }
     }
 }
