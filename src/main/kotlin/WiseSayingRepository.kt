@@ -1,14 +1,14 @@
 package org.example
 
 class WiseSayingRepository {
+    private val fileUtil = FileUtil("db/wiseSaying/")
     private val wiseSayings = ArrayList<WiseSaying>()
-    private var lastIndex = 1
 
-    fun getLastIndex() = lastIndex
+    fun getLastIndex() = fileUtil.getLastIndex()
 
     fun add(wiseSaying: WiseSaying) {
         wiseSayings.add(wiseSaying)
-        lastIndex++
+        fileUtil.save(wiseSaying)
     }
 
     fun getCount() = wiseSayings.size
