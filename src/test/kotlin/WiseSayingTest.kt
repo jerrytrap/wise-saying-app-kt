@@ -123,4 +123,18 @@ class WiseSayingTest {
         assertThat(actualOutput).contains("1번 명언이 삭제되었습니다.")
         assertEquals(0, app.getWiseSayingCount())
     }
+
+    @Test
+    fun `존재하지 않는 명언 삭제`() {
+        val input = "삭제?id=1"
+
+        testUtil.setInputStream(input)
+        val outputStream = testUtil.setOutputStream()
+
+        app.handleCommand()
+
+        val actualOutput = outputStream.toString()
+        assertThat(actualOutput).contains("1번 명언은 존재하지 않습니다.")
+        assertEquals(0, app.getWiseSayingCount())
+    }
 }

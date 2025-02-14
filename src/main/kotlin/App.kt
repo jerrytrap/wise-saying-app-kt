@@ -50,7 +50,11 @@ class App {
     }
 
     private fun deleteWiseSaying(id: Int) {
-        wiseSayings.removeAt(id - 1)
-        println("${id}번 명언이 삭제되었습니다.")
+        if (wiseSayings.find { it.id == id - 1 } == null) {
+            println("${id}번 명언은 존재하지 않습니다.")
+        } else {
+            wiseSayings.removeAt(id - 1)
+            println("${id}번 명언이 삭제되었습니다.")
+        }
     }
 }
