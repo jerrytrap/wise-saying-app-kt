@@ -3,17 +3,13 @@ import kotlin.test.assertEquals
 import org.assertj.core.api.Assertions.assertThat
 import org.example.*
 import org.junit.jupiter.api.AfterEach
+import kotlin.test.fail
 
 class WiseSayingTest {
     private val wiseSayingService = WiseSayingService(WiseSayingRepository())
     private val wiseSayingController = WiseSayingController(wiseSayingService)
 
     private val testUtil = TestUtil()
-
-    @AfterEach
-    fun tearDown() {
-        WiseSaying.resetIndex()
-    }
 
     @Test
     fun `종료 명령어 입력 시 프로그램 종료`() {
@@ -92,11 +88,10 @@ class WiseSayingTest {
     @Test
     fun `명언 목록 출력`() {
         val input = "목록"
-        val wiseSaying1 = WiseSaying("현재를 사랑하라.", "작자미상")
-        val wiseSaying2 = WiseSaying("현재를 사랑하라.", "작자미상")
+
         wiseSayingService.apply {
-            addWiseSaying(wiseSaying1)
-            addWiseSaying(wiseSaying2)
+            addWiseSaying("현재를 사랑하라.", "작자미상")
+            addWiseSaying("현재를 사랑하라.", "작자미상")
         }
 
         testUtil.setInputStream(input)
@@ -114,8 +109,7 @@ class WiseSayingTest {
     @Test
     fun `명언 삭제`() {
         val input = "삭제?id=1"
-        val wiseSaying = WiseSaying("현재를 사랑하라.", "작자미상")
-        wiseSayingService.addWiseSaying(wiseSaying)
+        wiseSayingService.addWiseSaying("현재를 사랑하라.", "작자미상")
 
         testUtil.setInputStream(input)
         val outputStream = testUtil.setOutputStream()
@@ -139,5 +133,30 @@ class WiseSayingTest {
         val actualOutput = outputStream.toString()
         assertThat(actualOutput).contains("1번 명언은 존재하지 않습니다.")
         assertEquals(0, wiseSayingService.getCount())
+    }
+
+    @Test
+    fun `명언 수정`() {
+        val input = """
+            수정?id=1
+            현재와 자신을 사랑하라.
+            홍길동
+        """.trimIndent()
+
+        wiseSayingService.addWiseSaying("현재를 사랑하라.", "작자미상")
+
+        testUtil.setInputStream(input)
+        val outputStream = testUtil.setOutputStream()
+
+        wiseSayingController.handleCommand()
+
+        val actualOutput = outputStream.toString()
+        assertThat(actualOutput)
+            .contains("명언(기존) : 현재를 사랑하라.")
+            .contains("작가(기존) : 작자미상")
+
+        val modifiedWiseSaying = wiseSayingService.findWiseSaying(1) ?: fail("1번 명언을 찾을 수 없습니다.")
+        assertEquals("현재와 자신을 사랑하라.", modifiedWiseSaying.content)
+        assertEquals("홍길동", modifiedWiseSaying.author)
     }
 }
