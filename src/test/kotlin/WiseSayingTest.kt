@@ -6,10 +6,16 @@ import org.junit.jupiter.api.AfterEach
 import kotlin.test.fail
 
 class WiseSayingTest {
-    private val wiseSayingService = WiseSayingService(WiseSayingRepository())
+    private val wiseSayingRepository = WiseSayingRepository(FileUtil("db/test/"))
+    private val wiseSayingService = WiseSayingService(wiseSayingRepository)
     private val wiseSayingController = WiseSayingController(wiseSayingService)
 
     private val testUtil = TestUtil()
+
+    @AfterEach
+    fun tearDown() {
+        wiseSayingRepository.clearAll()
+    }
 
     @Test
     fun `종료 명령어 입력 시 프로그램 종료`() {

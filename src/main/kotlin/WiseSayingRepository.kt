@@ -1,14 +1,21 @@
 package org.example
 
-class WiseSayingRepository {
-    private val fileUtil = FileUtil("db/wiseSaying/")
+class WiseSayingRepository(
+    private val fileUtil: FileUtil
+) {
     private val wiseSayings = ArrayList<WiseSaying>()
+    private var lastIndex = fileUtil.loadLastIndex()
 
-    fun getLastIndex() = fileUtil.getLastIndex()
+    init {
+        wiseSayings.addAll(fileUtil.loadAll())
+        fileUtil.loadLastIndex()
+    }
+
+    fun getLastIndex() = lastIndex
 
     fun add(wiseSaying: WiseSaying) {
         wiseSayings.add(wiseSaying)
-        fileUtil.save(wiseSaying)
+        lastIndex = fileUtil.save(lastIndex, wiseSaying)
     }
 
     fun getCount() = wiseSayings.size
@@ -21,11 +28,19 @@ class WiseSayingRepository {
 
     fun delete(id: Int) {
         wiseSayings.removeIf { it.id == id }
+        fileUtil.remove(id)
     }
 
     fun modify(id: Int, newWiseSaying: WiseSaying) {
         wiseSayings.replaceAll {
             if (it.id == id) newWiseSaying else it
         }
+        fileUtil.save(id, newWiseSaying)
+    }
+
+    fun clearAll() {
+        wiseSayings.clear()
+        lastIndex = 1
+        fileUtil.clearAll()
     }
 }
