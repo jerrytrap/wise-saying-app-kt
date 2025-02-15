@@ -3,7 +3,7 @@ package org.example
 import java.io.File
 import java.io.FileOutputStream
 
-class FileUtil(
+class FileManager(
     private val basePath: String
 ) {
     init {
@@ -16,7 +16,7 @@ class FileUtil(
 
         val fileList = directory.listFiles { _, name ->
             name.endsWith(".json")
-        }?.reversed() ?: emptyList()
+        }?.sorted() ?: emptyList()
 
         return fileList.map { file ->
             parseJson(file.readText())
@@ -48,16 +48,25 @@ class FileUtil(
         }
     }
 
-    fun save(id: Int, wiseSaying: WiseSaying): Int {
-        val path = "$basePath${id}.json"
+    fun save(wiseSaying: WiseSaying): Int {
+        val path = "$basePath${wiseSaying.id}.json"
         val file = createFileOrDirectoryIfNotExist(path)
 
         FileOutputStream(file).use { outputStream ->
             outputStream.write(convertToJson(wiseSaying).toByteArray())
         }
+        return wiseSaying.id
+    }
 
-        updateIndex(id + 1)
-        return id + 1
+    fun modify(id: Int, wiseSaying: WiseSaying): Int {
+        val path = "$basePath${id}.json"
+        val file = File(path)
+
+        FileOutputStream(file).use { outputStream ->
+            outputStream.write(convertToJson(wiseSaying).toByteArray())
+        }
+
+        return id
     }
 
     fun remove(id: Int) {
@@ -83,7 +92,7 @@ class FileUtil(
         return file
     }
 
-    private fun updateIndex(id: Int) {
+    fun updateIndex(id: Int) {
         val path = basePath + "lastId.txt"
 
         FileOutputStream(path).use { outputStream ->

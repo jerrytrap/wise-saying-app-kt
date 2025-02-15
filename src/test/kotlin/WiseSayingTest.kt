@@ -6,7 +6,7 @@ import org.junit.jupiter.api.AfterEach
 import kotlin.test.fail
 
 class WiseSayingTest {
-    private val wiseSayingRepository = WiseSayingRepository(FileUtil("db/test/"))
+    private val wiseSayingRepository = WiseSayingRepository(FileManager("db/test/"))
     private val wiseSayingService = WiseSayingService(wiseSayingRepository)
     private val wiseSayingController = WiseSayingController(wiseSayingService)
 

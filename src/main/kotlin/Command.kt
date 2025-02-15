@@ -2,13 +2,13 @@ package org.example
 
 class Command private constructor(
     val type: CommandType,
-    val targetId: Int = DEFAULT_ID,
+    val targetId: Int = NULL_ID,
     val keywordType: KeywordType = KeywordType.NONE,
     val keyword: String = "",
     val page: Int = 1
 ) {
     companion object {
-        private const val DEFAULT_ID = -1
+        private const val NULL_ID = -1
         private val editRegex = "^수정\\?id=(\\d+)$".toRegex()
         private val deleteRegex = "^삭제\\?id=(\\d+)$".toRegex()
         private val searchRegex = "^목록\\?keywordType=(author|content)&keyword=([^&]+)$".toRegex()

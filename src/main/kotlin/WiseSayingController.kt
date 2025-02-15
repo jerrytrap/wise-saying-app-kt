@@ -24,7 +24,6 @@ class WiseSayingController(
             }
 
             CommandType.SHOW -> {
-                println("번호 / 작가 / 명언")
                 val result = wiseSayingService.getWiseSayings(command.keywordType, command.keyword, command.page)
                 printWiseSayings(result)
             }
@@ -62,23 +61,31 @@ class WiseSayingController(
     }
 
     private fun printWiseSayings(wiseSayings: Page<WiseSaying>) {
+        printColumns()
+
         wiseSayings.data.forEach { wiseSaying ->
             println("${wiseSaying.id} / ${wiseSaying.author} / ${wiseSaying.content}")
         }
+
         printPages(wiseSayings.page, wiseSayings.totalSize)
+    }
+
+    private fun printColumns() {
+        println("번호 / 작가 / 명언")
     }
 
     private fun printPages(page: Int, totalPageCount: Int) {
         println("---------------")
         print("페이지 :")
 
-        for (p in 1..totalPageCount) {
+        IntRange(1, totalPageCount).forEach { p ->
             if (p == page) {
-                System.out.printf(" [%d]", p)
+                print(" [${p}]")
             } else {
-                System.out.printf(" %d", p)
+                print(" $p")
             }
         }
+
         println()
     }
 }

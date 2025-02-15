@@ -1,8 +1,8 @@
 package org.example
 
 class App {
-    private val fileUtil = FileUtil("db/wiseSaying/")
-    private val wiseSayingRepository = WiseSayingRepository(fileUtil)
+    private val fileManager = FileManager("db/wiseSaying/")
+    private val wiseSayingRepository = WiseSayingRepository(fileManager)
     private val wiseSayingService = WiseSayingService(wiseSayingRepository)
     private val wiseSayingController = WiseSayingController(wiseSayingService)
 

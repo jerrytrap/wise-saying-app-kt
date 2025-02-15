@@ -4,11 +4,10 @@ class WiseSayingService(
     private val wiseSayingRepository: WiseSayingRepository
 ) {
     fun addWiseSaying(content: String, author: String): Int {
-        val id = wiseSayingRepository.getLastIndex()
-        val wiseSaying = WiseSaying(id, content, author)
+        val wiseSaying = WiseSaying(content = content, author = author)
+        val createdId = wiseSayingRepository.addWiseSaying(wiseSaying)
 
-        wiseSayingRepository.addWiseSaying(wiseSaying)
-        return id
+        return createdId
     }
 
     fun getCount() = wiseSayingRepository.getCount();

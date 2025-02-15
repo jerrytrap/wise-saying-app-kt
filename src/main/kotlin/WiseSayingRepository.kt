@@ -4,26 +4,34 @@ import kotlin.math.ceil
 import kotlin.math.min
 
 class WiseSayingRepository(
-    private val fileUtil: FileUtil
+    private val fileManager: FileManager
 ) {
     private val wiseSayings = ArrayList<WiseSaying>()
-    private var lastIndex = fileUtil.loadLastIndex()
+    private var lastIndex = fileManager.loadLastIndex()
 
     init {
-        wiseSayings.addAll(fileUtil.loadAll())
-        fileUtil.loadLastIndex()
+        wiseSayings.addAll(fileManager.loadAll())
     }
 
-    fun getLastIndex() = lastIndex
+    fun addWiseSaying(wiseSaying: WiseSaying): Int {
+        val newWiseSaying = WiseSaying(lastIndex, wiseSaying.content, wiseSaying.author)
 
-    fun addWiseSaying(wiseSaying: WiseSaying) {
-        wiseSayings.add(wiseSaying)
-        lastIndex = fileUtil.save(lastIndex, wiseSaying)
+        wiseSayings.add(newWiseSaying)
+        fileManager.apply {
+            save(newWiseSaying)
+            updateIndex(lastIndex + 1)
+        }
+
+        return lastIndex++
     }
 
     fun getCount() = wiseSayings.size
 
     fun getWiseSayings(keywordType: KeywordType, keyword: String, page: Int = 1): Page<WiseSaying> {
+        if (wiseSayings.isEmpty()) {
+            return Page(emptyList(), page, 0)
+        }
+
         val searchResult = wiseSayings
             .filter {
                 when (keywordType) {
@@ -32,37 +40,40 @@ class WiseSayingRepository(
                     KeywordType.NONE -> true
                 }
             }
+
         val totalPageCount = ceil(searchResult.size / OFFSET.toFloat()).toInt()
 
         if (totalPageCount < page) {
             return Page(emptyList(), page, totalPageCount)
         }
 
-        return Page(searchResult
-            .subList(min(searchResult.size - 1, (page - 1) * OFFSET), min(page * OFFSET, searchResult.size)),
-            page,
-            totalPageCount
-        )
+        val pagedList = searchResult
+            .subList(
+                min(searchResult.size - 1, (page - 1) * OFFSET),
+                min(page * OFFSET, searchResult.size)
+            )
+
+        return Page(pagedList, page, totalPageCount)
     }
 
     fun findWiseSaying(id: Int): WiseSaying? = wiseSayings.find { it.id == id }
 
     fun deleteWiseSaying(id: Int) {
         wiseSayings.removeIf { it.id == id }
-        fileUtil.remove(id)
+        fileManager.remove(id)
     }
 
     fun modifyWiseSaying(id: Int, newWiseSaying: WiseSaying) {
         wiseSayings.replaceAll {
             if (it.id == id) newWiseSaying else it
         }
-        fileUtil.save(id, newWiseSaying)
+        fileManager.modify(id, newWiseSaying)
     }
 
     fun clearAll() {
         wiseSayings.clear()
         lastIndex = 1
-        fileUtil.clearAll()
+        fileManager.clearAll()
     }
 
     companion object {
