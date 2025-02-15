@@ -1,4 +1,10 @@
-package org.example
+package org.example.controller
+
+import org.example.service.WiseSayingService
+import org.example.entity.Command
+import org.example.entity.CommandType
+import org.example.entity.Page
+import org.example.entity.WiseSaying
 
 class WiseSayingController(
     private val wiseSayingService: WiseSayingService
@@ -29,10 +35,13 @@ class WiseSayingController(
             }
 
             CommandType.DELETE -> {
-                if (wiseSayingService.deleteWiseSaying(command.targetId)) {
-                    println("${command.targetId}번 명언이 삭제되었습니다.")
-                } else {
+                val wiseSaying = wiseSayingService.findWiseSaying(command.targetId)
+
+                if (wiseSaying == null) {
                     println("${command.targetId}번 명언은 존재하지 않습니다.")
+                } else {
+                    wiseSayingService.deleteWiseSaying(command.targetId)
+                    println("${command.targetId}번 명언이 삭제되었습니다.")
                 }
             }
 

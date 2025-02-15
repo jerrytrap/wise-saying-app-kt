@@ -1,4 +1,4 @@
-package org.example
+package org.example.entity
 
 data class Page<T>(
     val data: List<T>,

@@ -1,4 +1,4 @@
-package org.example
+package org.example.entity
 
 data class WiseSaying(
     val id: Int = NULL_ID,

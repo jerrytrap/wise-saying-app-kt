@@ -1,5 +1,6 @@
-package org.example
+package org.example.repository
 
+import org.example.entity.WiseSaying
 import java.io.File
 import java.io.FileOutputStream
 

@@ -1,5 +1,8 @@
-package org.example
+package org.example.repository
 
+import org.example.entity.KeywordType
+import org.example.entity.Page
+import org.example.entity.WiseSaying
 import kotlin.math.ceil
 import kotlin.math.min
 

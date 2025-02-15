@@ -1,4 +1,4 @@
-package org.example
+package org.example.entity
 
 enum class KeywordType(private val type: String) {
     CONTENT("content"),

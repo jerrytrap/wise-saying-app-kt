@@ -1,4 +1,4 @@
-package org.example
+package org.example.entity
 
 class Command private constructor(
     val type: CommandType,

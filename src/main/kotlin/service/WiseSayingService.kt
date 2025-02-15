@@ -1,13 +1,17 @@
-package org.example
+package org.example.service
+
+import org.example.entity.KeywordType
+import org.example.entity.WiseSaying
+import org.example.repository.WiseSayingRepository
 
 class WiseSayingService(
     private val wiseSayingRepository: WiseSayingRepository
 ) {
     fun addWiseSaying(content: String, author: String): Int {
         val wiseSaying = WiseSaying(content = content, author = author)
-        val createdId = wiseSayingRepository.addWiseSaying(wiseSaying)
+        val generatedId = wiseSayingRepository.addWiseSaying(wiseSaying)
 
-        return createdId
+        return generatedId
     }
 
     fun getCount() = wiseSayingRepository.getCount();
@@ -15,14 +19,8 @@ class WiseSayingService(
     fun getWiseSayings(keywordType: KeywordType, keyword: String, page: Int = 1) =
         wiseSayingRepository.getWiseSayings(keywordType, keyword, page)
 
-    fun deleteWiseSaying(id: Int): Boolean {
-        return if (wiseSayingRepository.findWiseSaying(id) != null) {
-            wiseSayingRepository.deleteWiseSaying(id)
-            true
-        } else {
-            false
-        }
-    }
+    fun deleteWiseSaying(id: Int) =
+        wiseSayingRepository.deleteWiseSaying(id)
 
     fun findWiseSaying(id: Int) = wiseSayingRepository.findWiseSaying(id)
 

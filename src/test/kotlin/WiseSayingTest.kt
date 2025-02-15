@@ -1,7 +1,10 @@
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 import org.assertj.core.api.Assertions.assertThat
-import org.example.*
+import org.example.controller.WiseSayingController
+import org.example.repository.FileManager
+import org.example.repository.WiseSayingRepository
+import org.example.service.WiseSayingService
 import org.junit.jupiter.api.AfterEach
 import kotlin.test.fail
 
