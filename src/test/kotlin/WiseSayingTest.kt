@@ -186,4 +186,34 @@ class WiseSayingTest {
             .contains("1 / 작자미상 / 현재를 사랑하라.")
             .doesNotContain("2 / 홍길동 / 과거에 집착하지 마라.")
     }
+
+    @Test
+    fun `명언 페이징`() {
+        val input = "목록?page=2"
+
+        wiseSayingService.apply {
+            addWiseSaying("명언1", "작가1")
+            addWiseSaying("명언2", "작가2")
+            addWiseSaying("명언3", "작가3")
+            addWiseSaying("명언4", "작가4")
+            addWiseSaying("명언5", "작가5")
+            addWiseSaying("명언6", "작가6")
+        }
+
+        testUtil.setInputStream(input)
+        val outputStream = testUtil.setOutputStream()
+
+        wiseSayingController.handleCommand()
+
+        val actualOutput = outputStream.toString()
+        assertThat(actualOutput)
+            .contains("번호 / 작가 / 명언")
+            .contains("6 / 작가6 / 명언6")
+            .contains("1 [2]")
+            .doesNotContain("1 / 작가1 / 명언1")
+            .doesNotContain("2 / 작가2 / 명언2")
+            .doesNotContain("3 / 작가3 / 명언3")
+            .doesNotContain("4 / 작가4 / 명언4")
+            .doesNotContain("5 / 작가5 / 명언5")
+    }
 }

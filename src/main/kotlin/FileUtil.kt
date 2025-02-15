@@ -16,7 +16,7 @@ class FileUtil(
 
         val fileList = directory.listFiles { _, name ->
             name.endsWith(".json")
-        }?.toList() ?: emptyList()
+        }?.reversed() ?: emptyList()
 
         return fileList.map { file ->
             parseJson(file.readText())

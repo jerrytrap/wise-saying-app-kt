@@ -7,29 +7,28 @@ class WiseSayingService(
         val id = wiseSayingRepository.getLastIndex()
         val wiseSaying = WiseSaying(id, content, author)
 
-        wiseSayingRepository.add(wiseSaying)
+        wiseSayingRepository.addWiseSaying(wiseSaying)
         return id
     }
 
     fun getCount() = wiseSayingRepository.getCount();
 
-    fun getWiseSayings() = wiseSayingRepository.getAll();
-
-    fun getWiseSayings(keywordType: KeywordType, keyword: String) = wiseSayingRepository.search(keywordType, keyword)
+    fun getWiseSayings(keywordType: KeywordType, keyword: String, page: Int = 1) =
+        wiseSayingRepository.getWiseSayings(keywordType, keyword, page)
 
     fun deleteWiseSaying(id: Int): Boolean {
-        return if (wiseSayingRepository.find(id) != null) {
-            wiseSayingRepository.delete(id)
+        return if (wiseSayingRepository.findWiseSaying(id) != null) {
+            wiseSayingRepository.deleteWiseSaying(id)
             true
         } else {
             false
         }
     }
 
-    fun findWiseSaying(id: Int) = wiseSayingRepository.find(id)
+    fun findWiseSaying(id: Int) = wiseSayingRepository.findWiseSaying(id)
 
     fun modifyWiseSaying(id: Int, content: String, author: String) {
         val newWiseSaying = WiseSaying(id, content, author)
-        wiseSayingRepository.modify(id, newWiseSaying)
+        wiseSayingRepository.modifyWiseSaying(id, newWiseSaying)
     }
 }

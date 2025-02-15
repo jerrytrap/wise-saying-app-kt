@@ -25,12 +25,8 @@ class WiseSayingController(
 
             CommandType.SHOW -> {
                 println("번호 / 작가 / 명언")
-
-                if ((command.keywordType != KeywordType.NONE).and(command.keyword.isNotBlank())) {
-                    printWiseSayings(wiseSayingService.getWiseSayings(command.keywordType, command.keyword))
-                } else {
-                    printWiseSayings(wiseSayingService.getWiseSayings())
-                }
+                val result = wiseSayingService.getWiseSayings(command.keywordType, command.keyword, command.page)
+                printWiseSayings(result)
             }
 
             CommandType.DELETE -> {
@@ -65,9 +61,24 @@ class WiseSayingController(
         return true
     }
 
-    private fun printWiseSayings(wiseSayings: List<WiseSaying>) {
-        wiseSayings.forEach { wiseSaying ->
+    private fun printWiseSayings(wiseSayings: Page<WiseSaying>) {
+        wiseSayings.data.forEach { wiseSaying ->
             println("${wiseSaying.id} / ${wiseSaying.author} / ${wiseSaying.content}")
         }
+        printPages(wiseSayings.page, wiseSayings.totalSize)
+    }
+
+    private fun printPages(page: Int, totalPageCount: Int) {
+        println("---------------")
+        print("페이지 :")
+
+        for (p in 1..totalPageCount) {
+            if (p == page) {
+                System.out.printf(" [%d]", p)
+            } else {
+                System.out.printf(" %d", p)
+            }
+        }
+        println()
     }
 }
