@@ -208,12 +208,12 @@ class WiseSayingTest {
         val actualOutput = outputStream.toString()
         assertThat(actualOutput)
             .contains("번호 / 작가 / 명언")
-            .contains("6 / 작가6 / 명언6")
+            .contains("1 / 작가1 / 명언1")
             .contains("1 [2]")
-            .doesNotContain("1 / 작가1 / 명언1")
             .doesNotContain("2 / 작가2 / 명언2")
             .doesNotContain("3 / 작가3 / 명언3")
             .doesNotContain("4 / 작가4 / 명언4")
             .doesNotContain("5 / 작가5 / 명언5")
+            .doesNotContain("6 / 작가6 / 명언6")
     }
 }

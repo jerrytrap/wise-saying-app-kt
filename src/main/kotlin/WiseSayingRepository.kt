@@ -16,7 +16,7 @@ class WiseSayingRepository(
     fun addWiseSaying(wiseSaying: WiseSaying): Int {
         val newWiseSaying = WiseSaying(lastIndex, wiseSaying.content, wiseSaying.author)
 
-        wiseSayings.add(newWiseSaying)
+        wiseSayings.add(0, newWiseSaying)
         fileManager.apply {
             save(newWiseSaying)
             updateIndex(lastIndex + 1)
