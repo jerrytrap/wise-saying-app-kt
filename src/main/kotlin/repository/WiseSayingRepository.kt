@@ -73,6 +73,10 @@ class WiseSayingRepository(
         fileManager.modify(id, newWiseSaying)
     }
 
+    fun buildWiseSaying() {
+        fileManager.build(wiseSayings)
+    }
+
     fun clearAll() {
         wiseSayings.clear()
         lastIndex = 1

@@ -16,8 +16,8 @@ class FileManager(
         createFileOrDirectoryIfNotExist(basePath)
 
         val fileList = directory.listFiles { _, name ->
-            name.endsWith(".json")
-        }?.reversed() ?: emptyList()
+            name.endsWith(".json") && name != "data.json"
+        }?.sortedByDescending { it.name } ?: emptyList()
 
         return fileList.map { file ->
             parseJson(file.readText())
@@ -79,6 +79,23 @@ class FileManager(
         }
     }
 
+    fun build(wiseSayings: List<WiseSaying>) {
+        val path = basePath + "data.json"
+        createFileOrDirectoryIfNotExist(path)
+
+        FileOutputStream(path).use { outputStream ->
+            outputStream.write(convertToJsonArray(wiseSayings).toByteArray())
+        }
+    }
+
+    fun updateIndex(id: Int) {
+        val path = basePath + "lastId.txt"
+
+        FileOutputStream(path).use { outputStream ->
+            outputStream.write(id.toString().toByteArray())
+        }
+    }
+
     private fun createFileOrDirectoryIfNotExist(path: String): File {
         val file = File(path)
 
@@ -91,14 +108,6 @@ class FileManager(
         }
 
         return file
-    }
-
-    fun updateIndex(id: Int) {
-        val path = basePath + "lastId.txt"
-
-        FileOutputStream(path).use { outputStream ->
-            outputStream.write(id.toString().toByteArray())
-        }
     }
 
     private fun convertToJson(wiseSaying: WiseSaying): String {
@@ -131,5 +140,18 @@ class FileManager(
         val author = map["author"].toString()
 
         return WiseSaying(id, content, author)
+    }
+
+    private fun convertToJsonArray(wiseSayings: List<WiseSaying>): String {
+        return wiseSayings.joinToString(",\n", "[\n", "]\n") { wiseSaying ->
+            addIndentToEachLine(convertToJson(wiseSaying))
+        }
+    }
+
+    private fun addIndentToEachLine(input: String): String {
+        val indent = "  "
+
+        return input.lines()
+            .joinToString("\n") { indent + it }
     }
 }

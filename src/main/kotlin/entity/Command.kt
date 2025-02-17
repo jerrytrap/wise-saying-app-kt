@@ -29,6 +29,10 @@ class Command private constructor(
                     Command(CommandType.SHOW)
                 }
 
+                input == "빌드" -> {
+                    Command(CommandType.BUILD)
+                }
+
                 input.matches(editRegex) -> {
                     val matchResult = editRegex.find(input)
                     val id = matchResult?.groups?.get(1)?.value?.toIntOrNull()

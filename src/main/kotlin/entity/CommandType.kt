@@ -5,6 +5,7 @@ enum class CommandType() {
     SHOW,
     DELETE,
     MODIFY,
+    BUILD,
     QUIT,
     UNKNOWN
 }

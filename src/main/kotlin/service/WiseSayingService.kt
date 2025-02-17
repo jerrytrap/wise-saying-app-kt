@@ -28,4 +28,6 @@ class WiseSayingService(
         val newWiseSaying = WiseSaying(id, content, author)
         wiseSayingRepository.modifyWiseSaying(id, newWiseSaying)
     }
+
+    fun buildWiseSaying() = wiseSayingRepository.buildWiseSaying()
 }

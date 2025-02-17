@@ -62,6 +62,11 @@ class WiseSayingController(
                 }
             }
 
+            CommandType.BUILD -> {
+                wiseSayingService.buildWiseSaying()
+                println("data.json 파일의 내용이 갱신되었습니다.")
+            }
+
             CommandType.UNKNOWN -> {
                 println("명령어를 다시 입력해주세요.")
             }
